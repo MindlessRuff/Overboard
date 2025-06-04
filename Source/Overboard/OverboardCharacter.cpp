@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "OverboardCharacter.h"
+
+#include "EngineUtils.h"
 #include "OverboardProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -8,6 +10,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "IDetailTreeNode.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 
@@ -34,7 +37,7 @@ AOverboardCharacter::AOverboardCharacter()
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
-
+	
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -74,6 +77,65 @@ void AOverboardCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
+void AOverboardCharacter::PickUpItem(AItem* Item)
+{
+	if (Item && !CurrentItem)
+	{
+		CurrentItem = Item;
+		Item->PickUp(this);
+
+		UE_LOG(LogTemp, Display, TEXT("Picked up %s"), *Item->GetItemName());
+		
+	}
+	
+}
+
+void AOverboardCharacter::DepositItem()
+{
+	FHitResult HitResult;
+	FVector StartLocation = FirstPersonCameraComponent->GetComponentLocation();
+	FVector EndLocation = StartLocation + FirstPersonCameraComponent->GetForwardVector() * 2000.f;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams))
+	{
+		if (HitResult.GetActor()->ActorHasTag("DepositZone"))
+		{
+			if (CurrentItem)
+			{
+				UE_LOG(LogTemp, Display, TEXT("Deposited %s"), *CurrentItem->GetItemName());
+				CurrentItem = nullptr;
+			}
+		}
+	}
+}
+
+void AOverboardCharacter::Interact()
+{
+	if (CurrentItem != nullptr)
+	{
+		DepositItem();
+		return;
+	}
+
+	FHitResult HitResult;
+	FVector StartLocation = FirstPersonCameraComponent->GetComponentLocation();
+	FVector EndLocation = StartLocation + FirstPersonCameraComponent->GetForwardVector() * 2000.f;
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams))
+	{
+		if (AItem* Item = Cast<AItem>(HitResult.GetActor()))
+		{
+			PickUpItem(Item);
+		}
+	}
+	
+}
 
 void AOverboardCharacter::Move(const FInputActionValue& Value)
 {

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Items/Item.h"
 #include "Logging/LogMacros.h"
 #include "OverboardCharacter.generated.h"
 
@@ -44,9 +45,22 @@ class AOverboardCharacter : public ACharacter
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
+
+	/** Interact Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InteractAction;
 	
 public:
 	AOverboardCharacter();
+
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void PickUpItem(AItem* Item);
+
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void DepositItem();
+
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact();
 
 protected:
 	/** Called for movement input */
@@ -55,7 +69,9 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	AItem* CurrentItem;
+	
 	// APawn interface
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
