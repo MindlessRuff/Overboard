@@ -40,5 +40,7 @@ void URaftSurvivalWidget::UpdateSurvivalStats()
 			Text_Water->SetText(FText::FromString(FString::Printf(TEXT("Water: %d"), GS->Water)));
 		if (Text_Sanity)
 			Text_Sanity->SetText(FText::FromString(FString::Printf(TEXT("Sanity: %d"), GS->Sanity)));
+		if (Text_Button_AdvanceDay)
+			Text_Button_AdvanceDay->SetText(FText::FromString(FString::Printf(TEXT("Next Day"))));
 	}
 }

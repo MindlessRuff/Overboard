@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Items/Item.h"
+#include "Overboard/Items/Item.h"
 #include "Logging/LogMacros.h"
 #include "OverboardCharacter.generated.h"
 

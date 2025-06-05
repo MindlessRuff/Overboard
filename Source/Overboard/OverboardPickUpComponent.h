@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
-#include "OverboardCharacter.h"
+#include "Character/OverboardCharacter.h"
 #include "OverboardPickUpComponent.generated.h"
 
 // Declaration of the delegate that will be called when someone picks this up

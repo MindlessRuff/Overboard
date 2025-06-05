@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Button_AdvanceDay;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Text_Button_AdvanceDay;
+
 	UFUNCTION()
 	void OnAdvanceDayClicked();
 };

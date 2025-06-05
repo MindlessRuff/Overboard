@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "OverboardGameMode.h"
-#include "OverboardCharacter.h"
+#include "Overboard/Character/OverboardCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AOverboardGameMode::AOverboardGameMode()

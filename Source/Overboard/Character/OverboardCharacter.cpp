@@ -3,7 +3,7 @@
 #include "OverboardCharacter.h"
 
 #include "EngineUtils.h"
-#include "OverboardProjectile.h"
+#include "Overboard/OverboardProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -33,7 +33,7 @@ AOverboardCharacter::AOverboardCharacter()
 	HeldItemAnchor->SetupAttachment(FirstPersonCameraComponent);
 
 	// Offset: Forward 100 units, down 50 units (tweak to taste)
-	HeldItemAnchor->SetRelativeLocation(FVector(100.f, 0.f, -50.f));
+	HeldItemAnchor->SetRelativeLocation(FVector(50.f, 0.f, -50.f));
 	HeldItemAnchor->SetRelativeRotation(FRotator::ZeroRotator);  // Optional
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)

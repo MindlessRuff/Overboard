@@ -2,7 +2,7 @@
 
 
 #include "OverboardWeaponComponent.h"
-#include "OverboardCharacter.h"
+#include "Character/OverboardCharacter.h"
 #include "OverboardProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"
