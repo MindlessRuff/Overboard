@@ -33,7 +33,7 @@ class AOverboardCharacter : public ACharacter
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
-
+	
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* JumpAction;
@@ -49,18 +49,35 @@ class AOverboardCharacter : public ACharacter
 	/** Interact Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* InteractAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	USceneComponent* HeldItemAnchor;
 	
 public:
 	AOverboardCharacter();
+	
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void Interact();
+    
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void CheckForInteractables();
+    
+	UFUNCTION(BlueprintCallable, Category = "Interaction")
+	void DropHeldItem();
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void PickUpItem(AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
 	void DepositItem();
-
-	UFUNCTION(BlueprintCallable, Category = "Interaction")
-	void Interact();
+	
+	/** Returns Mesh1P subobject **/
+	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+	/** Returns FirstPersonCameraComponent subobject **/
+	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 protected:
 	/** Called for movement input */
@@ -68,20 +85,45 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
-	AItem* CurrentItem;
 	
 	// APawn interface
 	virtual void NotifyControllerChanged() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
+	
+	// Interaction Settings
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float InteractionDistance = 300.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float InteractionRadius = 20.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float HeldItemBobSpeed = 2.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	float HeldItemBobAmount = 3.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	TSubclassOf<UUserWidget> InteractionWidgetClass;
 
-public:
-	/** Returns Mesh1P subobject **/
-	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
-	/** Returns FirstPersonCameraComponent subobject **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+private:
+	
+	UPROPERTY()
+	AItem* HeldItem;
+	UPROPERTY()
+	AItem* CurrentInteractable;
+	
+	float HeldItemTime;
+
+	FVector PreviousVelocity = FVector::ZeroVector;
+	
+	FRotator PreviousCameraRotation;
+	float RotationSmoothingSpeed = 8.0f;
+	float PositionSmoothingSpeed = 10.0f;
+
+	
+	FHitResult PerformInteractionTrace();
 
 };
 
