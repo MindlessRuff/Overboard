@@ -3,17 +3,36 @@
 
 #include "RaftGameState.h"
 
+#include "JsonObjectConverter.h"
+
 ARaftGameState::ARaftGameState()
 {
 	CurrentDay = 1;
 	Food = 100;
 	Water = 100;
 	Sanity = 100;
+
+	
 }
 
 void ARaftGameState::BeginPlay()
 {
 	Super::BeginPlay();
+	FString FilePath = FPaths::ProjectContentDir() + "Data/IntroTexts.json";
+	FString JsonContent;
+	EventText = CreateDefaultSubobject<UTextBlock>(TEXT("EventText"));
+
+	if (FFileHelper::LoadFileToString(JsonContent, *FilePath))
+	{
+		FJsonObjectConverter::JsonArrayStringToUStruct(JsonContent, &LoadedEntries, 0, 0);
+		for (const FRaftDayTextEntry& Entry : LoadedEntries)
+		{
+			// UE_LOG(LogTemp, Warning, TEXT("Day %d | Text: %s"),
+			// 	Entry.Day,
+			// 	*Entry.Text);
+		}
+	}
+	TriggerRandomEvent();
 }
 
 void ARaftGameState::AdvanceDay()
@@ -33,7 +52,14 @@ void ARaftGameState::ApplyDailyDecay()
 
 void ARaftGameState::TriggerRandomEvent()
 {
-	// Placeholder for future random event manager
+	if (CurrentDay == 1)
+	{
+		int32 RandomIndex = FMath::RandRange(0, LoadedEntries.Num() - 1);
+		UE_LOG(LogTemp, Warning, TEXT("Day %d | Text: %s"),
+				LoadedEntries[RandomIndex].Day,
+				*LoadedEntries[RandomIndex].Text);
+		//EventText->SetText(FText::FromString(*LoadedEntries[RandomIndex].Text));
+	}
 }
 
 void ARaftGameState::CheckGameOver()

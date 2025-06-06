@@ -23,10 +23,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateSurvivalStats();
+	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Text_Event;
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Text_DayLabel;
+	UTextBlock* Text_Day;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Text_Food;

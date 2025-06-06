@@ -3,12 +3,26 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextBlock.h"
 #include "GameFramework/GameStateBase.h"
 #include "RaftGameState.generated.h"
 
 /**
  * 
  */
+
+USTRUCT(BlueprintType)
+struct FRaftDayTextEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Day;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Text;
+};
+
 UCLASS()
 class OVERBOARD_API ARaftGameState : public AGameStateBase
 {
@@ -29,6 +43,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Survival")
 	int32 Sanity;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Survival")
+	UTextBlock* EventText;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Day Text")
+	TArray<FRaftDayTextEntry> LoadedEntries;
 
 	UFUNCTION(BlueprintCallable, Category = "Survival")
 	void AdvanceDay();

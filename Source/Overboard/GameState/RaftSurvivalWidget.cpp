@@ -15,7 +15,14 @@ void URaftSurvivalWidget::NativeConstruct()
 	{
 		Button_AdvanceDay->OnClicked.AddDynamic(this, &URaftSurvivalWidget::OnAdvanceDayClicked);
 	}
-
+	if (Text_Event)
+	{
+		Text_Event->SetText(FText::FromString(TEXT("Test text should show")));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("EventText is null!"));
+	}
 	UpdateSurvivalStats();
 }
 
@@ -32,8 +39,8 @@ void URaftSurvivalWidget::UpdateSurvivalStats()
 {
 	if (ARaftGameState* GS = GetWorld()->GetGameState<ARaftGameState>())
 	{
-		if (Text_DayLabel)
-			Text_DayLabel->SetText(FText::FromString(FString::Printf(TEXT("Day: %d"), GS->CurrentDay)));
+		if (Text_Day)
+			Text_Day->SetText(FText::FromString(FString::Printf(TEXT("Day: %d"), GS->CurrentDay)));
 		if (Text_Food)
 			Text_Food->SetText(FText::FromString(FString::Printf(TEXT("Food: %d"), GS->Food)));
 		if (Text_Water)
@@ -42,5 +49,7 @@ void URaftSurvivalWidget::UpdateSurvivalStats()
 			Text_Sanity->SetText(FText::FromString(FString::Printf(TEXT("Sanity: %d"), GS->Sanity)));
 		if (Text_Button_AdvanceDay)
 			Text_Button_AdvanceDay->SetText(FText::FromString(FString::Printf(TEXT("Next Day"))));
+		if (Text_Event)
+			Text_Event->SetText(FText::FromString(FString::Printf(TEXT("%p"), GS->EventText)));
 	}
 }

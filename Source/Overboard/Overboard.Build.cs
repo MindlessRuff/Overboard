@@ -10,7 +10,7 @@ public class Overboard : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
 		
-		PrivateDependencyModuleNames.AddRange(new string[] { "UMG" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "UMG", "Json", "JsonUtilities" });
 
 	}
 }
