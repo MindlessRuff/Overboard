@@ -45,7 +45,7 @@ public:
 	int32 Sanity;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Survival")
-	UTextBlock* EventText;
+	FText Text_Event;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Day Text")
 	TArray<FRaftDayTextEntry> LoadedEntries;
@@ -54,6 +54,7 @@ public:
 	void AdvanceDay();
 
 protected:
+	void StartIntro();
 	virtual void BeginPlay() override;
 	void ApplyDailyDecay();
 	void TriggerRandomEvent();

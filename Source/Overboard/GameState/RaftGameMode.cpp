@@ -21,7 +21,7 @@ void ARaftGameMode::BeginPlay()
 		URaftSurvivalWidget* RaftUI = CreateWidget<URaftSurvivalWidget>(GetWorld(), RaftUIClass);
 		if (RaftUI)
 		{
-			RaftUI->AddToViewport();  // Adds the UI to the screen
+			RaftUI->AddToViewport();
 
 			APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 			if (PC)

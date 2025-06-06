@@ -15,15 +15,6 @@ void URaftSurvivalWidget::NativeConstruct()
 	{
 		Button_AdvanceDay->OnClicked.AddDynamic(this, &URaftSurvivalWidget::OnAdvanceDayClicked);
 	}
-	if (Text_Event)
-	{
-		Text_Event->SetText(FText::FromString(TEXT("Test text should show")));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("EventText is null!"));
-	}
-	UpdateSurvivalStats();
 }
 
 void URaftSurvivalWidget::OnAdvanceDayClicked()
@@ -50,6 +41,6 @@ void URaftSurvivalWidget::UpdateSurvivalStats()
 		if (Text_Button_AdvanceDay)
 			Text_Button_AdvanceDay->SetText(FText::FromString(FString::Printf(TEXT("Next Day"))));
 		if (Text_Event)
-			Text_Event->SetText(FText::FromString(FString::Printf(TEXT("%p"), GS->EventText)));
+			Text_Event->SetText(GS->Text_Event);
 	}
 }

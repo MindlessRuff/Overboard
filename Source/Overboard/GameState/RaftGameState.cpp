@@ -11,7 +11,6 @@ ARaftGameState::ARaftGameState()
 	Food = 100;
 	Water = 100;
 	Sanity = 100;
-
 	
 }
 
@@ -20,7 +19,6 @@ void ARaftGameState::BeginPlay()
 	Super::BeginPlay();
 	FString FilePath = FPaths::ProjectContentDir() + "Data/IntroTexts.json";
 	FString JsonContent;
-	EventText = CreateDefaultSubobject<UTextBlock>(TEXT("EventText"));
 
 	if (FFileHelper::LoadFileToString(JsonContent, *FilePath))
 	{
@@ -32,7 +30,12 @@ void ARaftGameState::BeginPlay()
 			// 	*Entry.Text);
 		}
 	}
-	TriggerRandomEvent();
+	StartIntro();
+}
+
+void ARaftGameState::StartIntro()
+{
+	Text_Event = FText::FromString(LoadedEntries[0].Text);
 }
 
 void ARaftGameState::AdvanceDay()
@@ -52,13 +55,10 @@ void ARaftGameState::ApplyDailyDecay()
 
 void ARaftGameState::TriggerRandomEvent()
 {
-	if (CurrentDay == 1)
+	if (CurrentDay)
 	{
 		int32 RandomIndex = FMath::RandRange(0, LoadedEntries.Num() - 1);
-		UE_LOG(LogTemp, Warning, TEXT("Day %d | Text: %s"),
-				LoadedEntries[RandomIndex].Day,
-				*LoadedEntries[RandomIndex].Text);
-		//EventText->SetText(FText::FromString(*LoadedEntries[RandomIndex].Text));
+		Text_Event = FText::FromString(LoadedEntries[RandomIndex].Text);
 	}
 }
 
