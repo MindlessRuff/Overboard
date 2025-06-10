@@ -7,6 +7,14 @@
 #include "Components/TextBlock.h"
 #include "Components/WidgetComponent.h"
 
+FItemData AItem::GetItemData() const
+{
+	FItemData Data;
+	Data.Name = ItemName;
+	Data.Type = ItemType;
+	Data.Quantity = ItemQuantity;
+	return Data;
+}
 
 // Sets default values
 AItem::AItem()
@@ -28,7 +36,6 @@ AItem::AItem()
 	InteractionPrompt->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 	
 	ItemName = TEXT("Item");
-	ItemDescription = TEXT("This is an item.");
 	InteractionText = "Press E to pick up!";
 	bIsPickedUp = false;
 	RunningTime = 0.f;
@@ -184,10 +191,7 @@ void AItem::ShowInteractionPrompt(bool bShow)
 		{
 			// Get the user widget
 			UUserWidget* Widget = InteractionPrompt->GetUserWidgetObject();
-            
-			// Try to find and update the text component
-			// The exact implementation depends on your widget setup
-			// Example with a text block named "PromptText":
+			
 			UTextBlock* TextBlock = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("PromptText")));
 			if (TextBlock)
 			{

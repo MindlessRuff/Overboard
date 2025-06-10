@@ -13,6 +13,7 @@
 #include "IDetailTreeNode.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Overboard/DepositZone.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -80,7 +81,6 @@ void AOverboardCharacter::CheckForInteractables()
 			CurrentInteractable->SetHighlighted(false);
 			CurrentInteractable = nullptr;
 		}
-		return;
 	}
     
 	// Perform trace to find interactable objects
@@ -192,39 +192,36 @@ void AOverboardCharacter::PickUpItem(AItem* Item)
 		
 		Item->SetActorRelativeLocation(FVector(75.f, 0.f, 30.f)); // Offset in front of view
 		Item->SetActorRelativeRotation(FRotator(0.f, 0.f, 0.f));
-
+		
 		UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(Item->GetRootComponent());
 		if (Prim)
 		{
-			Prim->SetSimulatePhysics(false);
-			Prim->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			Prim->SetSimulatePhysics(false); // Stop physics
+			Prim->SetEnableGravity(false);   // Prevent falling
+			Prim->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Keep overlaps working
+			Prim->SetCollisionResponseToAllChannels(ECR_Overlap);    // Or fine-tune as needed
+			Prim->SetGenerateOverlapEvents(true);
 		}
-		
-
-		UE_LOG(LogTemp, Display, TEXT("Picked up %s"), *Item->GetItemName());
-		
 	}
 }
 
 void AOverboardCharacter::DepositItem()
 {
-	FHitResult HitResult;
-	FVector StartLocation = FirstPersonCameraComponent->GetComponentLocation();
-	FVector EndLocation = StartLocation + FirstPersonCameraComponent->GetForwardVector() * 2000.f;
-
-	FCollisionQueryParams QueryParams;
-	QueryParams.AddIgnoredActor(this);
-
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartLocation, EndLocation, ECC_Visibility, QueryParams))
+	if (HeldItem && false)
 	{
-		if (HitResult.GetActor()->ActorHasTag("DepositZone"))
+		HeldItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(HeldItem->GetRootComponent());
+		if (Prim)
 		{
-			if (HeldItem)
-			{
-				UE_LOG(LogTemp, Display, TEXT("Deposited %s"), *HeldItem->GetItemName());
-				HeldItem = nullptr;
-			}
+			Prim->SetSimulatePhysics(true);
+			Prim->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			Prim->SetCollisionResponseToAllChannels(ECR_Ignore);
+			Prim->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+			Prim->SetGenerateOverlapEvents(true);
 		}
+
+		HeldItem = nullptr;
 	}
 }
 

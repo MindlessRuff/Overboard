@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Overboard/Items/ItemStruct.h"
 #include "OverboardGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -30,6 +31,12 @@ public:
 
 	UPROPERTY()
 	UOverboardWidget* OverboardWidget;
+
+	/** Called when an item is successfully deposited into the raft */
+	void RegisterCollectedItem(const FName& ItemName);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<FName, int32> DepositedItems;
 
 protected:
 	FTimerHandle CountdownTimerHandle;

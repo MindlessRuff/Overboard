@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemStruct.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
@@ -25,7 +26,7 @@ public:
 	virtual void PickUp(AActor* PickUpActor);
 
 	UFUNCTION(BlueprintCallable, Category = "Item")
-	FString GetItemName() const { return ItemName; }
+	FName GetItemName() const { return ItemName; }
     
 	// Show or hide interaction prompt
 	UFUNCTION(BlueprintCallable, Category = "Item")
@@ -33,8 +34,8 @@ public:
 	
 	// Toggle item highlighting
 	UFUNCTION(BlueprintCallable, Category = "Item")
-	
 	void SetHighlighted(bool bHighlight);
+	
 	UFUNCTION(BlueprintCallable, Category = "Item")
 	bool IsHighlighted() const { return bIsHighlighted; }
 
@@ -55,6 +56,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Held State")
 	float GetHeldScale() const { return HeldScale; }
 
+	UFUNCTION(BlueprintCallable)
+	FItemData GetItemData() const;
 
 	
 protected:
@@ -71,13 +74,19 @@ protected:
 	UWidgetComponent* InteractionPrompt;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString ItemName;
+	FName ItemName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString ItemDescription;
+	FString ItemType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	int32 ItemQuantity;
     
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	FString InteractionText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	FString DepositText;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 	float InteractionRange = 300.0f;
