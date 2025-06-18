@@ -24,9 +24,6 @@ public:
 	// Function to be called when this actor is picked up
 	UFUNCTION(BlueprintCallable, Category = "Item")
 	virtual void PickUp(AActor* PickUpActor);
-
-	UFUNCTION(BlueprintCallable, Category = "Item")
-	FName GetItemName() const { return ItemName; }
     
 	// Show or hide interaction prompt
 	UFUNCTION(BlueprintCallable, Category = "Item")
@@ -56,8 +53,26 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Held State")
 	float GetHeldScale() const { return HeldScale; }
 
-	UFUNCTION(BlueprintCallable)
-	FItemData GetItemData() const;
+	// Add this property
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	FItemData ItemData;
+
+	// Optional: Helper functions
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	FName GetItemName() const { return ItemData.Name; }
+    
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	FString GetItemType() const { return ItemData.Type; }
+    
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	int32 GetQuantity() const { return ItemData.Quantity; }
+	
+	// Getters for item state
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	bool IsDepositable() const { return bisDepositable; }
+
+	UFUNCTION(BlueprintCallable, Category = "Item")
+	void SetDepositable(bool isDepositable);
 
 	
 protected:
@@ -146,6 +161,7 @@ private:
     FVector InitialScale;
 	
     bool bIsHighlighted;
+	bool bisDepositable;
 
 	AActor* HeldBy;
     

@@ -53,12 +53,11 @@ void AOverboardGameMode::TickCountdown()
 	OverboardWidget->UpdateTimeDisplay(RemainingTime);
 }
 
-void AOverboardGameMode::RegisterCollectedItem(const FName& ItemName)
+void AOverboardGameMode::RegisterCollectedItem(AItem* Item)
 {
-	DepositedItems.FindOrAdd(ItemName) += 1;
+	//DepositedItems.FindOrAdd(ItemName) += 1;
 
-	UE_LOG(LogTemp, Log, TEXT("Deposited item: %s (Total: %d)"),
-		   *ItemName.ToString(), DepositedItems[ItemName]);
+	UE_LOG(LogTemp, Log, TEXT("Deposited item: %s"), *Item->GetItemName().ToString());
 }
 
 

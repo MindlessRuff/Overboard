@@ -7,15 +7,6 @@
 #include "Components/TextBlock.h"
 #include "Components/WidgetComponent.h"
 
-FItemData AItem::GetItemData() const
-{
-	FItemData Data;
-	Data.Name = ItemName;
-	Data.Type = ItemType;
-	Data.Quantity = ItemQuantity;
-	return Data;
-}
-
 // Sets default values
 AItem::AItem()
 {
@@ -26,6 +17,8 @@ AItem::AItem()
 	RootComponent = ItemMesh;
 	ItemMesh->SetCollisionProfileName(TEXT("BlockAll"));
 	ItemMesh->SetSimulatePhysics(true);
+	ItemMesh->SetGenerateOverlapEvents(true);
+	ItemMesh->SetCollisionObjectType(ECC_WorldDynamic);
 
 	// Create widget component for floating text
 	InteractionPrompt = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionPrompt"));
@@ -35,11 +28,11 @@ AItem::AItem()
 	InteractionPrompt->SetVisibility(false);
 	InteractionPrompt->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 	
-	ItemName = TEXT("Item");
 	InteractionText = "Press E to pick up!";
 	bIsPickedUp = false;
 	RunningTime = 0.f;
 	HeldBy = nullptr;
+	bisDepositable = false;
 	
 	RotationAxis.Normalize();
 }
@@ -234,3 +227,7 @@ void AItem::PickUp(AActor* PickUpActor)
 	}
 }
 
+void AItem::SetDepositable(bool isDepositable)
+{
+	bisDepositable = isDepositable;
+}

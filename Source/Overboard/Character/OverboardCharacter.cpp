@@ -14,6 +14,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "Overboard/DepositZone.h"
+#include "Overboard/GameState/OverboardGameMode.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -176,52 +177,47 @@ void AOverboardCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	}
 }
 
-
-
 void AOverboardCharacter::PickUpItem(AItem* Item)
 {
-	
 	UE_LOG(LogTemp, Display, TEXT("Try to attach item to camera"));
 	if (Item && !HeldItem)
 	{
 		HeldItem = Item;
-		
+        
 		Item->PickUp(this);
 		Item->AttachToComponent(HeldItemAnchor, FAttachmentTransformRules::SnapToTargetIncludingScale);
-		UE_LOG(LogTemp, Display, TEXT("Item Attached To: %s"), *Item->GetAttachParentActor()->GetName());
-		
-		Item->SetActorRelativeLocation(FVector(75.f, 0.f, 30.f)); // Offset in front of view
+        
+		Item->SetActorRelativeLocation(FVector(75.f, 0.f, 30.f));
 		Item->SetActorRelativeRotation(FRotator(0.f, 0.f, 0.f));
-		
+        
 		UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(Item->GetRootComponent());
 		if (Prim)
 		{
-			Prim->SetSimulatePhysics(false); // Stop physics
-			Prim->SetEnableGravity(false);   // Prevent falling
-			Prim->SetCollisionEnabled(ECollisionEnabled::QueryOnly); // Keep overlaps working
-			Prim->SetCollisionResponseToAllChannels(ECR_Overlap);    // Or fine-tune as needed
+			Prim->SetSimulatePhysics(false);
+			Prim->SetEnableGravity(false);
+			Prim->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			Prim->SetCollisionResponseToAllChannels(ECR_Overlap);
 			Prim->SetGenerateOverlapEvents(true);
+            
+			// Debug the item's collision after pickup
+			UE_LOG(LogTemp, Warning, TEXT("Item collision object type: %d"), (int32)Prim->GetCollisionObjectType());
+			UE_LOG(LogTemp, Warning, TEXT("Item collision enabled: %d"), (int32)Prim->GetCollisionEnabled());
+			UE_LOG(LogTemp, Warning, TEXT("Item generates overlap events: %s"), Prim->GetGenerateOverlapEvents() ? TEXT("true") : TEXT("false"));
 		}
 	}
 }
 
 void AOverboardCharacter::DepositItem()
 {
-	if (HeldItem && false)
+	if (HeldItem && HeldItem->IsDepositable())
 	{
-		HeldItem->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-
-		UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(HeldItem->GetRootComponent());
-		if (Prim)
+		AOverboardGameMode * GameMode = Cast<AOverboardGameMode>(GetWorld()->GetAuthGameMode());
+		if (GameMode)
 		{
-			Prim->SetSimulatePhysics(true);
-			Prim->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			Prim->SetCollisionResponseToAllChannels(ECR_Ignore);
-			Prim->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-			Prim->SetGenerateOverlapEvents(true);
+			GameMode->RegisterCollectedItem(HeldItem);
+			HeldItem->Destroy();
+			HeldItem = nullptr;
 		}
-
-		HeldItem = nullptr;
 	}
 }
 

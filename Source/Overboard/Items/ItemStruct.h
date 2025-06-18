@@ -15,11 +15,11 @@ struct FItemData
 	FString Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Quantity;;
+	int32 Quantity;
 
-	FItemData() {}
+	FItemData() : Quantity(0) {} // Initialize quantity
 
-	FItemData(const FString& InName, const FString& InType, const int32 InQuantity)
-		: Name(InName), Type(InType), Quantity(InQuantity) {}
+	FItemData(const FName& InName, const FString& InType, const int32 InQuantity)
+	   : Name(InName), Type(InType), Quantity(InQuantity) {}
 };
 
