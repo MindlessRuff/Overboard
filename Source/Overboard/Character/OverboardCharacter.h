@@ -21,7 +21,16 @@ UCLASS(config=Game)
 class AOverboardCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
+	
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundWave* AlarmSound;
+	
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundWave* DepositSound;
+	
+	UPROPERTY(EditAnywhere, Category = "Audio")
+	USoundWave* PickUpSound; // Assign your sound asset in the editor
+	
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh1P;

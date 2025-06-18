@@ -13,6 +13,7 @@
 #include "IDetailTreeNode.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Kismet/GameplayStatics.h"
 #include "Overboard/DepositZone.h"
 #include "Overboard/GameState/OverboardGameMode.h"
 
@@ -52,6 +53,7 @@ AOverboardCharacter::AOverboardCharacter()
 	// Add held item variables for extra effects
 	HeldItemBobSpeed = 2.0f;
 	HeldItemBobAmount = 3.0f;
+
 }
 void AOverboardCharacter::BeginPlay()
 {
@@ -61,6 +63,10 @@ void AOverboardCharacter::BeginPlay()
 	*FirstPersonCameraComponent->GetComponentLocation().ToString(),
 	*FirstPersonCameraComponent->GetComponentRotation().ToString());
 
+	if (AlarmSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), AlarmSound);
+	}
 	
 }
 void AOverboardCharacter::Tick(float DeltaTime)
@@ -183,7 +189,10 @@ void AOverboardCharacter::PickUpItem(AItem* Item)
 	if (Item && !HeldItem)
 	{
 		HeldItem = Item;
-        
+        if (PickUpSound)
+        {
+        	UGameplayStatics::PlaySound2D(GetWorld(), PickUpSound);
+        }
 		Item->PickUp(this);
 		Item->AttachToComponent(HeldItemAnchor, FAttachmentTransformRules::SnapToTargetIncludingScale);
         
@@ -214,6 +223,10 @@ void AOverboardCharacter::DepositItem()
 		AOverboardGameMode * GameMode = Cast<AOverboardGameMode>(GetWorld()->GetAuthGameMode());
 		if (GameMode)
 		{
+			if (DepositSound)
+			{
+				UGameplayStatics::PlaySound2D(GetWorld(), DepositSound);
+			}
 			GameMode->RegisterCollectedItem(HeldItem);
 			HeldItem->Destroy();
 			HeldItem = nullptr;
